@@ -13,10 +13,10 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets Xml UiTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets XMl UiTools)
 
 add_executable(SpriteUILoader
-  main.cpp
-  layoutloader.h layoutloader.cpp
-  widgetbuilder.h widgetbuilder.cpp
-  layoutparseerror.h layoutparseerror.cpp
+  src/main.cpp
+  src/layoutloader.h src/layoutloader.cpp
+  src/widgetbuilder.h src/widgetbuilder.cpp
+  src/layoutparseerror.h src/layoutparseerror.cpp
 )
 
 target_link_libraries(SpriteUILoader

@@ -10,6 +10,8 @@ WidgetBuilder::WidgetBuilder(QObject *parent)
     : QObject(parent)
 {
     loader = new QUiLoader(this);
+    qDebug() << "Widgets:" << loader->availableWidgets();
+    qDebug() << "Layouts:" << loader->availableLayouts();
 }
 
 void WidgetBuilder::createRootWidget(const QDomNode &nodes)
