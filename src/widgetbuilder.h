@@ -5,7 +5,7 @@
 #include <QMap>
 #include <QObject>
 
-class QUiLoader;
+class SpriteUiLoader;
 
 class WidgetBuilder : public QObject
 {
@@ -19,10 +19,6 @@ public:
     QWidget *ui();
 
 private:
-    bool isWidget(QString class_name);
-    bool isLayout(QString class_name);
-    bool isCustom(QString class_name);
-
     QMap<QString, QString> parseAttributes(QDomNamedNodeMap attribute_nodes);
 
     // Improvment: Make this a template?
@@ -36,7 +32,7 @@ private:
 
     QWidget *root_widget;
     QString root_widget_name;
-    QUiLoader *loader;
+    SpriteUiLoader *loader;
 
     // We style after creating the tree. As such we need to know all widget types we created to parse into the right styler.
     QMap<QString, QString> widget_types;

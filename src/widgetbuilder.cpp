@@ -3,15 +3,14 @@
 #include <QDebug>
 #include <QLayout>
 #include <QMainWindow>
-#include <QUiLoader>
 #include <QWidget>
+
+#include "spriteuiloader.h"
 
 WidgetBuilder::WidgetBuilder(QObject *parent)
     : QObject(parent)
 {
-    loader = new QUiLoader(this);
-    qDebug() << "Widgets:" << loader->availableWidgets();
-    qDebug() << "Layouts:" << loader->availableLayouts();
+    loader = new SpriteUiLoader(this);
 }
 
 void WidgetBuilder::createRootWidget(const QDomNode &nodes)
@@ -38,26 +37,26 @@ void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent
             continue;
         }
 
-        if (isWidget(parent_type)) {
+        if (loader->isWidget(parent_type)) {
             // Parent is a widget. What are we though?
-            if (isWidget(node.nodeName())) {
+            if (loader->isWidget(node.nodeName())) {
                 //So are we!
                 appendWidgetToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
             }
 
-            if (isLayout(node.nodeName())) {
+            if (loader->isLayout(node.nodeName())) {
                 // We are a layout!
                 appendLayoutToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
             }
         }
 
-        if (isLayout(parent_type)) {
+        if (loader->isLayout(parent_type)) {
             // Parent is a layout.
-            if (isWidget(node.nodeName())) {
+            if (loader->isWidget(node.nodeName())) {
                 appendWidgetToLayout(parent_id, node.nodeName(), node_attributes.value("id"));
             }
 
-            if (isLayout(node.nodeName())) {
+            if (loader->isLayout(node.nodeName())) {
                 appendLayoutToLayout(parent_id, node.nodeName(), node_attributes.value("id"));
             }
         }
@@ -66,21 +65,6 @@ void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent
             createChildElement(node.childNodes(), node_attributes.value("id"));
         }
     }
-}
-
-bool WidgetBuilder::isWidget(QString class_name)
-{
-    return loader->availableWidgets().contains(class_name);
-}
-
-bool WidgetBuilder::isLayout(QString class_name)
-{
-    return loader->availableLayouts().contains(class_name);
-}
-
-bool WidgetBuilder::isCustom(QString class_name)
-{
-    return !(isLayout(class_name) || isWidget(class_name));
 }
 
 QMap<QString, QString> WidgetBuilder::parseAttributes(QDomNamedNodeMap attribute_nodes)

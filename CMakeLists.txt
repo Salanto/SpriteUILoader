@@ -17,6 +17,7 @@ add_executable(SpriteUILoader
   src/layoutloader.h src/layoutloader.cpp
   src/widgetbuilder.h src/widgetbuilder.cpp
   src/layoutparseerror.h src/layoutparseerror.cpp
+  src/spriteuiloader.h src/spriteuiloader.cpp
 )
 
 target_link_libraries(SpriteUILoader
