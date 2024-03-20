@@ -14,6 +14,8 @@ int main(int argc, char *argv[])
     file.open(QIODevice::ReadOnly);
     loader.loadDocument(file.readAll());
     QWidget *foo = loader.ui();
+    QLabel *lbl = foo->findChild<QLabel *>("lobby_text");
+    lbl->setText("SomeText");
     foo->show();
 
     return app.exec();

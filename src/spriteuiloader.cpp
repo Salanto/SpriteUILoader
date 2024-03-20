@@ -16,7 +16,8 @@ SpriteUiLoader::SpriteUiLoader(QObject *parent)
     supported_layouts << availableLayouts();
     supported_effects << "QGraphicsDropShadowEffect";
 
-    effect_builders["QGraphicsDropShadowEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsDropShadowEffect>;
+    effect_builders["QGraphicsDropShadowEffect"]
+        = &SpriteUiLoader::instantiateEffect<QGraphicsDropShadowEffect>;
 }
 
 QWidget *SpriteUiLoader::createWidget(const QString &className, QWidget *parent, const QString &name)
@@ -37,6 +38,7 @@ QLayout *SpriteUiLoader::createLayout(const QString &className, QObject *parent,
 
 QGraphicsEffect *SpriteUiLoader::createEffect(const QString &className, QWidget *parent, const QString &name)
 {
+    qDebug() << className;
     if (supported_effects.contains(className)) {
         return createCustomEffect(className, parent, name);
     }
@@ -65,7 +67,7 @@ bool SpriteUiLoader::canCreateItem(QString class_name)
 
 QWidget *SpriteUiLoader::createCustomWidget(QString class_name, QWidget *parent, QString widget_name)
 {
-    if (!widget_builders.count(class_name)) {
+    if (widget_builders.count(class_name)) {
         WidgetBuilder builder = widget_builders[class_name];
         return (this->*builder)(parent, widget_name);
     }
@@ -83,7 +85,7 @@ QLayout *SpriteUiLoader::createCustomLayout(QString class_name, QObject *parent,
 
 QGraphicsEffect *SpriteUiLoader::createCustomEffect(QString class_name, QWidget *parent, QString object_name)
 {
-    if (!effect_builders.count(class_name)) {
+    if (effect_builders.contains(class_name)) {
         EffectBuilder builder = effect_builders[class_name];
         return (this->*builder)(parent, object_name);
     }

@@ -48,6 +48,11 @@ void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent
                 // We are a layout!
                 appendLayoutToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
             }
+
+            if (loader->isEffect(node.nodeName())) {
+                // We are a effect!
+                appendEffectToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
+            }
         }
 
         if (loader->isLayout(parent_type)) {
@@ -114,6 +119,17 @@ void WidgetBuilder::appendLayoutToLayout(QString parent_layout,
     QLayout *parent = getObjectPointer<QLayout *>(parent_layout);
     QLayout *layout = loader->createLayout(layout_type, parent, child_layout);
     parent->addItem(layout);
+}
+
+void WidgetBuilder::appendEffectToWidget(QString parent_widget,
+                                         QString effect_type,
+                                         QString child_effect)
+{
+    qDebug() << "Creating effect with name" << child_effect;
+    QWidget *parent = getObjectPointer<QWidget *>(parent_widget);
+    QGraphicsEffect *effect = loader->createEffect(effect_type, parent, child_effect);
+    qDebug() << effect;
+    parent->setGraphicsEffect(effect);
 }
 
 QWidget *WidgetBuilder::ui()
