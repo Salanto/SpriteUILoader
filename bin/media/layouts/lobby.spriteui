@@ -1,0 +1,12 @@
+<Lobby version="1" style="spritechat">
+    <QWidget id="lobby_main">
+		<QVBoxLayout id="box_layout">
+			<QLabel 
+				id="lobby_text">
+			</QLabel>
+			<QLabel 
+				id="lobby_text_2">
+			</QLabel>
+		</QVBoxLayout>
+	</QWidget>
+</Lobby>

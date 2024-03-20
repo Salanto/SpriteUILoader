@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     LayoutLoader loader(&app);
-    QFile file("./lobby.ui");
+    QFile file("./media/layouts/lobby.spriteui");
     file.open(QIODevice::ReadOnly);
     loader.loadDocument(file.readAll());
     QWidget *foo = loader.ui();
