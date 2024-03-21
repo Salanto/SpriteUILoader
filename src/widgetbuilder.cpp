@@ -128,7 +128,6 @@ void WidgetBuilder::appendEffectToWidget(QString parent_widget,
     qDebug() << "Creating effect with name" << child_effect;
     QWidget *parent = getObjectPointer<QWidget *>(parent_widget);
     QGraphicsEffect *effect = loader->createEffect(effect_type, parent, child_effect);
-    qDebug() << effect;
     parent->setGraphicsEffect(effect);
 }
 

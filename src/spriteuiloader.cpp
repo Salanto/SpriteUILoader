@@ -38,7 +38,6 @@ QLayout *SpriteUiLoader::createLayout(const QString &className, QObject *parent,
 
 QGraphicsEffect *SpriteUiLoader::createEffect(const QString &className, QWidget *parent, const QString &name)
 {
-    qDebug() << className;
     if (supported_effects.contains(className)) {
         return createCustomEffect(className, parent, name);
     }
@@ -67,7 +66,7 @@ bool SpriteUiLoader::canCreateItem(QString class_name)
 
 QWidget *SpriteUiLoader::createCustomWidget(QString class_name, QWidget *parent, QString widget_name)
 {
-    if (widget_builders.count(class_name)) {
+    if (widget_builders.contains(class_name)) {
         WidgetBuilder builder = widget_builders[class_name];
         return (this->*builder)(parent, widget_name);
     }
@@ -76,7 +75,7 @@ QWidget *SpriteUiLoader::createCustomWidget(QString class_name, QWidget *parent,
 
 QLayout *SpriteUiLoader::createCustomLayout(QString class_name, QObject *parent, QString layout_name)
 {
-    if (!layout_builders.count(class_name)) {
+    if (layout_builders.contains(class_name)) {
         LayoutBuilder builder = layout_builders[class_name];
         return (this->*builder)(parent, layout_name);
     }
