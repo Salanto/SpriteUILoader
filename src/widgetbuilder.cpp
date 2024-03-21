@@ -28,14 +28,26 @@ void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent
 {
     QString parent_type = widget_types.value(parent_id);
     for (int index = 0; index < nodes.size(); ++index) {
+
         const QDomNode &node = nodes.at(index);
         QMap<QString, QString> node_attributes = parseAttributes(node.attributes());
-        widget_types.insert(node_attributes.value("id"), node.nodeName());
+
+        if (!loader->canCreateItem(node.nodeName())) {
+            qDebug() << "Unable to create interface item. The class" << node.nodeName() << "is not supported.";
+            continue;
+        }
 
         if (node_attributes.value("id").isEmpty()) {
             qDebug() << "Unable to parse hierarchy. All elements need an id!";
             continue;
         }
+
+        if (widget_types.contains(node_attributes.value("id"))) {
+            qDebug() << "Unable to create object with same ID as another object. Object names must be unique!";
+            continue;
+        }
+
+        widget_types.insert(node_attributes.value("id"), node.nodeName());
 
         if (loader->isWidget(parent_type)) {
             // Parent is a widget. What are we though?

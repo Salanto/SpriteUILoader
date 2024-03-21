@@ -5,6 +5,9 @@
 #include <QLayout>
 
 #include <QGraphicsDropShadowEffect>
+#include <QGraphicsBlurEffect>
+#include <QGraphicsColorizeEffect>
+#include <QGraphicsOpacityEffect>
 
 SpriteUiLoader::SpriteUiLoader(QObject *parent)
     : QUiLoader{parent}
@@ -14,10 +17,13 @@ SpriteUiLoader::SpriteUiLoader(QObject *parent)
     // We may need to create widgets not automatically supproted.
     supported_widgets << availableWidgets();
     supported_layouts << availableLayouts();
-    supported_effects << "QGraphicsDropShadowEffect";
+    supported_effects << "QGraphicsDropShadowEffect" << "QGraphicsBlurEffect"
+                      << "QGraphicsColorizeEffect" << "QGraphicsOpacityEffect";
 
-    effect_builders["QGraphicsDropShadowEffect"]
-        = &SpriteUiLoader::instantiateEffect<QGraphicsDropShadowEffect>;
+    effect_builders["QGraphicsDropShadowEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsDropShadowEffect>;
+    effect_builders["QGraphicsBlurEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsBlurEffect>;
+    effect_builders["QGraphicsColorizeEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsColorizeEffect>;
+    effect_builders["QGraphicsOpacityEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsOpacityEffect>;
 }
 
 QWidget *SpriteUiLoader::createWidget(const QString &className, QWidget *parent, const QString &name)

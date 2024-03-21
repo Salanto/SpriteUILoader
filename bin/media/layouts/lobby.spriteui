@@ -1,10 +1,10 @@
 <Lobby version="1" style="spritechat">
-    <QWidget id="lobby_main">
-		<QVBoxLayout id="box_layout">
-			<QLabel id="lobby_text">
-					<QGraphicsDropShadowEffect id="drop_effect">
-					</QGraphicsDropShadowEffect>
-			</QLabel>
-		</QVBoxLayout>
-	</QWidget>
+   <QWidget id="lobby_main">
+      <QWidget/>	
+      <QVBoxLayout id="box_layout">
+         <QLabel id="lobby_text">
+            <QGraphicsDropShadowEffect id="drop_effect" />
+         </QLabel>
+      </QVBoxLayout>
+   </QWidget>
 </Lobby>
