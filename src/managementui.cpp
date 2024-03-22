@@ -2,6 +2,7 @@
 #include "layoutloader.h"
 
 #include <QDebug>
+#include <QErrorMessage>
 #include <QLabel>
 #include <QPushButton>
 #include <QTextEdit>
@@ -42,5 +43,7 @@ void ManageMentUI::on_pushbutton_pressed()
 
 void ManageMentUI::on_error(LayoutParseError error)
 {
-    qDebug() << error.errorString();
+    QErrorMessage *message = new QErrorMessage(nullptr);
+    message->setAttribute(Qt::WA_DeleteOnClose);
+    message->showMessage(error.errorString());
 }
