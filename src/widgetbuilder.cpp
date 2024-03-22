@@ -11,12 +11,13 @@ WidgetBuilder::WidgetBuilder(QObject *parent)
     : QObject(parent)
 {
     loader = new SpriteUiLoader(this);
+    root_widget = new QWidget(nullptr);
 }
 
 void WidgetBuilder::createRootWidget(const QDomNode &nodes)
 {
     QMap<QString, QString> node_attributes = parseAttributes(nodes.attributes());
-    root_widget = loader->createWidget(nodes.nodeName(), nullptr, node_attributes.value("id"));
+    loader->createWidget(nodes.nodeName(), root_widget, node_attributes.value("id"));
     widget_types.insert(node_attributes.value("id"), nodes.nodeName());
     root_widget_name = node_attributes.value("id");
     if (nodes.hasChildNodes()) {
@@ -99,7 +100,7 @@ void WidgetBuilder::appendWidgetToWidget(QString parent_widget,
                                          QString child_widget)
 {
     qDebug() << "Creating object with name" << child_widget;
-    QWidget *parent = getObjectPointer<QWidget *>(parent_widget);
+    QWidget *parent = objectPointer<QWidget *>(parent_widget);
     loader->createWidget(widget_type, parent, child_widget);
 }
 
@@ -108,7 +109,7 @@ void WidgetBuilder::appendWidgetToLayout(QString parent_layout,
                                          QString child_widget)
 {
     qDebug() << "Creating object with name" << child_widget;
-    QLayout *parent = getObjectPointer<QLayout *>(parent_layout);
+    QLayout *parent = objectPointer<QLayout *>(parent_layout);
     QWidget *widget = loader->createWidget(widget_type, nullptr, child_widget);
     parent->addWidget(widget);
 }
@@ -118,7 +119,7 @@ void WidgetBuilder::appendLayoutToWidget(QString parent_widget,
                                          QString child_layout)
 {
     qDebug() << "Creating object with name" << child_layout;
-    QWidget *parent = getObjectPointer<QWidget *>(parent_widget);
+    QWidget *parent = objectPointer<QWidget *>(parent_widget);
     QLayout *layout = loader->createLayout(layout_type, parent, child_layout);
     parent->setLayout(layout);
 }
@@ -128,7 +129,7 @@ void WidgetBuilder::appendLayoutToLayout(QString parent_layout,
                                          QString child_layout)
 {
     qDebug() << "Creating object with name" << child_layout;
-    QLayout *parent = getObjectPointer<QLayout *>(parent_layout);
+    QLayout *parent = objectPointer<QLayout *>(parent_layout);
     QLayout *layout = loader->createLayout(layout_type, parent, child_layout);
     parent->addItem(layout);
 }
@@ -138,21 +139,24 @@ void WidgetBuilder::appendEffectToWidget(QString parent_widget,
                                          QString child_effect)
 {
     qDebug() << "Creating effect with name" << child_effect;
-    QWidget *parent = getObjectPointer<QWidget *>(parent_widget);
+    QWidget *parent = objectPointer<QWidget *>(parent_widget);
     QGraphicsEffect *effect = loader->createEffect(effect_type, parent, child_effect);
     parent->setGraphicsEffect(effect);
 }
 
 QWidget *WidgetBuilder::ui()
 {
-    return root_widget;
+    // This step will be unecessary in production code as we would reparent to a QMainWindow.
+    QWidget *widget = objectPointer<QWidget *>(root_widget_name);
+    if (widget == nullptr) {
+        return widget;
+    }
+    widget->setParent(nullptr);
+    return widget;
 }
 
 template<typename T>
-T WidgetBuilder::getObjectPointer(QString object_name)
+T WidgetBuilder::objectPointer(QString object_name)
 {
-    if (object_name == root_widget_name) {
-        return dynamic_cast<T>(root_widget);
-    }
     return root_widget->findChild<T>(object_name);
 }

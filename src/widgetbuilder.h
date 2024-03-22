@@ -29,10 +29,10 @@ private:
     void appendEffectToWidget(QString parent_widget, QString effect_type, QString child_effect);
 
     template<typename T>
-    T getObjectPointer(QString object_name);
+    T objectPointer(QString object_name);
 
     QWidget *root_widget;
-    QString root_widget_name;
+    QString root_widget_name = "";
     SpriteUiLoader *loader;
 
     // We style after creating the tree. As such we need to know all widget types we created to parse into the right styler.

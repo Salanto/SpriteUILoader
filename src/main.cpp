@@ -5,18 +5,13 @@
 #include <QWidget>
 
 #include "layoutloader.h"
+#include "managementui.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    LayoutLoader loader(&app);
-    QFile file("./media/layouts/lobby.spriteui");
-    file.open(QIODevice::ReadOnly);
-    loader.loadDocument(file.readAll());
-    QWidget *foo = loader.ui();
-    QLabel *lbl = foo->findChild<QLabel *>("lobby_text");
-    lbl->setText("SomeText");
-    foo->show();
+    ManageMentUI *ui = new ManageMentUI();
+    ui->show();
 
     return app.exec();
 }

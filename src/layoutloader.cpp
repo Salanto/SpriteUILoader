@@ -5,7 +5,9 @@
 
 LayoutLoader::LayoutLoader(QObject *parent)
     : QObject{parent}
-{}
+{
+    builder = new WidgetBuilder(this);
+}
 
 void LayoutLoader::loadDocument(const QByteArray file)
 {
@@ -43,7 +45,6 @@ void LayoutLoader::loadDocument(const QByteArray file)
     }
 
     qInfo().noquote() << "Loading" << metadata.toString();
-    builder = new WidgetBuilder(this);
     builder->createRootWidget(version_node.firstChild());
 }
 
@@ -55,6 +56,8 @@ QWidget *LayoutLoader::ui()
 void LayoutLoader::reset()
 {
     document.clear();
+    builder->deleteLater();
+    builder = new WidgetBuilder(this);
 }
 
 LayoutLoader::VersionInformation LayoutLoader::parseVersion(QDomNode node)
