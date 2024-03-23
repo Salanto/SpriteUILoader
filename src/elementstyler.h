@@ -33,6 +33,15 @@ private:
 
     template<typename T>
     void move(QString element_id, QString position);
+
+    template<typename T>
+    void setColor(QString element_id, QString color);
+
+    template<typename T>
+    void setFloatOffset(QString element_id, QString offset);
+
+    template<typename T>
+    void setFloatBlurRadius(QString element_id, QString radius);
 };
 
 #endif // ELEMENTSTYLER_H
