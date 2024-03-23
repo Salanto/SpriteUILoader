@@ -81,7 +81,7 @@ jobs:
       working-directory: ${{github.workspace}}/bin/
       shell: bash
       run: |
-        windeployqt --no-quick-import --no-translations --no-virtualkeyboard --no-compiler-runtime --no-webkit2 --no-opengl-sw .
+        windeployqt --no-quick-import --no-translations --no-compiler-runtime --no-opengl-sw .
 
     - name: Upload Zip
       uses: actions/upload-artifact@v4
