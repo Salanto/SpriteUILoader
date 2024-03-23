@@ -1,4 +1,4 @@
-#include "managementui.h"
+#include "xmlinputwindow.h"
 #include "layoutloader.h"
 
 #include <QDebug>
@@ -8,7 +8,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-ManageMentUI::ManageMentUI(QWidget *parent)
+XMLInputWindow::XMLInputWindow(QWidget *parent)
     : QWidget{parent}
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -24,11 +24,11 @@ ManageMentUI::ManageMentUI(QWidget *parent)
     layout->addWidget(button);
 
     loader = new LayoutLoader(this);
-    connect(loader, &LayoutLoader::errorOccured, this, &ManageMentUI::on_error);
-    connect(button, &QPushButton::clicked, this, &ManageMentUI::on_pushbutton_pressed);
+    connect(loader, &LayoutLoader::errorOccured, this, &XMLInputWindow::on_error);
+    connect(button, &QPushButton::clicked, this, &XMLInputWindow::on_pushbutton_pressed);
 }
 
-void ManageMentUI::on_pushbutton_pressed()
+void XMLInputWindow::on_pushbutton_pressed()
 {
     loader->loadDocument(edit->toPlainText().toUtf8());
     QWidget *ui = loader->ui();
@@ -40,7 +40,7 @@ void ManageMentUI::on_pushbutton_pressed()
     ui->show();
 }
 
-void ManageMentUI::on_error(LayoutParseError error)
+void XMLInputWindow::on_error(LayoutParseError error)
 {
     QErrorMessage *message = new QErrorMessage(nullptr);
     message->setAttribute(Qt::WA_DeleteOnClose);

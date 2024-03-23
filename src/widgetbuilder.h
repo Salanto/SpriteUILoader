@@ -36,7 +36,7 @@ private:
     SpriteUiLoader *loader;
 
     // We style after creating the tree. As such we need to know all widget types we created to parse into the right styler.
-    QMap<QString, QString> widget_types;
+    QMap<QString, QString> element_classes;
     QMap<QString, QMap<QString, QString>> widget_configuration;
 };
 

@@ -9,8 +9,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets Xml UiTools)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Gui Widgets Xml UiTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets XMl UiTools)
+
+if (Qt6_VERSION VERSION_LESS 6.5)
+    message(FATAL_ERROR "This project only works with Qt 6.5 or higher!")
+endif()
 
 add_executable(SpriteUILoader
   src/main.cpp
@@ -18,7 +22,7 @@ add_executable(SpriteUILoader
   src/widgetbuilder.h src/widgetbuilder.cpp
   src/layoutparseerror.h src/layoutparseerror.cpp
   src/spriteuiloader.h src/spriteuiloader.cpp
-  src/managementui.h src/managementui.cpp
+  src/xmlinputwindow.h src/xmlinputwindow.cpp
   src/elementstyler.h src/elementstyler.cpp
 )
 

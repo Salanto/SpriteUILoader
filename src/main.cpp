@@ -4,13 +4,12 @@
 #include <QLabel>
 #include <QWidget>
 
-#include "layoutloader.h"
-#include "managementui.h"
+#include "xmlinputwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    ManageMentUI *ui = new ManageMentUI();
+    XMLInputWindow *ui = new XMLInputWindow();
     ui->show();
 
     return app.exec();

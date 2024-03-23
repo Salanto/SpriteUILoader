@@ -20,28 +20,24 @@ void LayoutLoader::loadDocument(const QByteArray file)
         error.xml_message = l_string.arg(result.errorMessage,
                                          QString::number(result.errorLine),
                                          QString::number(result.errorColumn));
-        emit errorOccured(error);
-        return;
+        return emit errorOccured(error);
     }
 
     QDomNode version_node = document.firstChild();
     if (version_node.isNull() || !version_node.hasAttributes()) {
         error.error = LayoutParseError::NoChildNode;
-        emit errorOccured(error);
-        return;
+        return emit errorOccured(error);
     }
     VersionInformation metadata = parseVersion(version_node);
 
     if (metadata.version != COMPATIBLE_VERSION) {
         error.error = LayoutParseError::VersionUnsupported;
-        emit errorOccured(error);
-        return;
+        return emit errorOccured(error);
     }
 
     if (metadata.style != COMPATIBLE_STYLE) {
         error.error = LayoutParseError::StyleUnsupported;
-        emit errorOccured(error);
-        return;
+        return emit errorOccured(error);
     }
 
     qInfo().noquote() << "Loading" << metadata.toString();
@@ -64,13 +60,13 @@ LayoutLoader::VersionInformation LayoutLoader::parseVersion(QDomNode node)
 {
     VersionInformation version;
     version.layout = node.nodeName();
-    QDomNamedNodeMap attributes = node.attributes();
+    QDomNamedNodeMap properties = node.attributes();
 
-    if (attributes.contains("style")) {
-        version.style = attributes.namedItem("style").nodeValue().toUpper();
+    if (properties.contains("style")) {
+        version.style = properties.namedItem("style").nodeValue().toUpper();
     }
-    if (attributes.contains("version")) {
-        version.version = attributes.namedItem("version").nodeValue().toInt();
+    if (properties.contains("version")) {
+        version.version = properties.namedItem("version").nodeValue().toInt();
     }
     return version;
 }

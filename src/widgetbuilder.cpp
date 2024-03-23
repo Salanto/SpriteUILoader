@@ -17,17 +17,17 @@ WidgetBuilder::WidgetBuilder(QObject *parent)
 
 void WidgetBuilder::createRootWidget(const QDomNode &nodes)
 {
-    QMap<QString, QString> node_attributes = parseAttributes(nodes.attributes());
-    loader->createWidget(nodes.nodeName(), root_widget, node_attributes.value("id"));
-    widget_types.insert(node_attributes.value("id"), nodes.nodeName());
-    root_widget_name = node_attributes.value("id");
+    QMap<QString, QString> element_properties = parseAttributes(nodes.attributes());
+    loader->createWidget(nodes.nodeName(), root_widget, element_properties.value("id"));
+    element_classes.insert(element_properties.value("id"), nodes.nodeName());
+    root_widget_name = element_properties.value("id");
     if (nodes.hasChildNodes()) {
-        createChildElement(nodes.childNodes(), node_attributes.value("id"));
+        createChildElement(nodes.childNodes(), element_properties.value("id"));
     }
 
     ElementStyler styler(this, root_widget);
-    for (const QString &element_id : widget_types.keys()) {
-        const QString &element_class = widget_types.value(element_id);
+    for (const QString &element_id : element_classes.keys()) {
+        const QString &element_class = element_classes.value(element_id);
         QMap<QString, QString> element_properties = widget_configuration.value(element_id);
         styler.styleElement(element_id, element_class, element_properties);
     }
@@ -35,61 +35,61 @@ void WidgetBuilder::createRootWidget(const QDomNode &nodes)
 
 void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent_id)
 {
-    QString parent_type = widget_types.value(parent_id);
+    QString parent_type = element_classes.value(parent_id);
     for (int index = 0; index < nodes.size(); ++index) {
 
         const QDomNode &node = nodes.at(index);
-        QMap<QString, QString> node_attributes = parseAttributes(node.attributes());
+        QMap<QString, QString> element_properties = parseAttributes(node.attributes());
 
         if (!loader->canCreateItem(node.nodeName())) {
             qDebug() << "Unable to create interface item. The class" << node.nodeName() << "is not supported.";
             continue;
         }
 
-        if (node_attributes.value("id").isEmpty()) {
+        if (element_properties.value("id").isEmpty()) {
             qDebug() << "Unable to parse hierarchy. All elements need an id!";
             continue;
         }
 
-        if (widget_types.contains(node_attributes.value("id"))) {
+        if (element_classes.contains(element_properties.value("id"))) {
             qDebug() << "Unable to create object with same ID as another object. Object names must be unique!";
             continue;
         }
 
-        widget_types.insert(node_attributes.value("id"), node.nodeName());
-        widget_configuration.insert(node_attributes.value("id"), node_attributes);
+        element_classes.insert(element_properties.value("id"), node.nodeName());
+        widget_configuration.insert(element_properties.value("id"), element_properties);
 
         if (loader->isWidget(parent_type)) {
             // Parent is a widget. What are we though?
             if (loader->isWidget(node.nodeName())) {
                 //So are we!
-                appendWidgetToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
+                appendWidgetToWidget(parent_id, node.nodeName(), element_properties.value("id"));
             }
 
             if (loader->isLayout(node.nodeName())) {
                 // We are a layout!
-                appendLayoutToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
+                appendLayoutToWidget(parent_id, node.nodeName(), element_properties.value("id"));
             }
 
             if (loader->isEffect(node.nodeName())) {
                 // We are a effect!
-                appendEffectToWidget(parent_id, node.nodeName(), node_attributes.value("id"));
+                appendEffectToWidget(parent_id, node.nodeName(), element_properties.value("id"));
             }
         }
 
         if (loader->isLayout(parent_type)) {
             // Parent is a layout.
             if (loader->isWidget(node.nodeName())) {
-                appendWidgetToLayout(parent_id, node.nodeName(), node_attributes.value("id"));
+                appendWidgetToLayout(parent_id, node.nodeName(), element_properties.value("id"));
             }
 
             if (loader->isLayout(node.nodeName())) {
-                appendLayoutToLayout(parent_id, node.nodeName(), node_attributes.value("id"));
+                appendLayoutToLayout(parent_id, node.nodeName(), element_properties.value("id"));
             }
         }
 
         if (node.hasChildNodes()) {
-            createChildElement(node.childNodes(), node_attributes.value("id"));
+            createChildElement(node.childNodes(), element_properties.value("id"));
         }
     }
 }

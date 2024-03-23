@@ -1,15 +1,15 @@
-#ifndef MANAGEMENTUI_H
-#define MANAGEMENTUI_H
+#ifndef XMLINPUTWINDOW_H
+#define XMLINPUTWINDOW_H
 
 #include <QTextEdit>
 #include <QWidget>
 #include "layoutloader.h"
 
-class ManageMentUI : public QWidget
+class XMLInputWindow : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ManageMentUI(QWidget *parent = nullptr);
+    explicit XMLInputWindow(QWidget *parent = nullptr);
 
 private slots:
     void on_pushbutton_pressed();
@@ -20,4 +20,4 @@ private:
     LayoutLoader *loader;
 };
 
-#endif // MANAGEMENTUI_H
+#endif // XMLINPUTWINDOW_H
