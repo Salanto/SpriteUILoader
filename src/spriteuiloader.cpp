@@ -24,6 +24,10 @@ SpriteUiLoader::SpriteUiLoader(QObject *parent)
     effect_builders["QGraphicsBlurEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsBlurEffect>;
     effect_builders["QGraphicsColorizeEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsColorizeEffect>;
     effect_builders["QGraphicsOpacityEffect"] = &SpriteUiLoader::instantiateEffect<QGraphicsOpacityEffect>;
+
+    qDebug() << "Supported widgets:" << Qt::endl << supported_widgets;
+    qDebug() << "Supported layouts:" << Qt::endl << supported_layouts;
+    qDebug() << "Supported effects:" << Qt::endl << supported_effects;
 }
 
 QWidget *SpriteUiLoader::createWidget(const QString &className, QWidget *parent, const QString &name)
