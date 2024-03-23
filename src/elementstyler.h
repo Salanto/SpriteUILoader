@@ -30,6 +30,9 @@ private:
 
     template<typename T>
     void setFixedSize(QString element_id, QString dimensions);
+
+    template<typename T>
+    void move(QString element_id, QString position);
 };
 
 #endif // ELEMENTSTYLER_H
