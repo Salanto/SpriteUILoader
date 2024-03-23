@@ -28,6 +28,10 @@ void ElementStyler::styleElement(QString element_id,
 
     QMap<QString, ElementStylist> class_stylists = stylists.value(element_class);
     for (const QString &property : element_properties.keys()) {
+        if (property == "id") {
+            continue;
+        }
+
         if (!class_stylists.contains(property)) {
             qDebug() << "Unhandled property" << property << "for element class" << element_class;
             continue;
