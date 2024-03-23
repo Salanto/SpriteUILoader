@@ -14,6 +14,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
 
     QMap<QString, ElementStylist> qlabel_stylists;
     qlabel_stylists["text"] = &ElementStyler::setText<QLabel>;
+    qlabel_stylists["image"] = &ElementStyler::setPixmap<QLabel>;
+    qlabel_stylists["size"] = &ElementStyler::setFixedSize<QLabel>;
     stylists["QLabel"] = qlabel_stylists;
 }
 
@@ -55,4 +57,33 @@ void ElementStyler::setText(QString element_id, QString text)
         return;
     }
     pointer->setText(text);
+}
+
+template<typename T>
+void ElementStyler::setPixmap(QString element_id, QString image_path)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "for image application";
+        return;
+    }
+    pointer->setScaledContents(true);
+    pointer->setPixmap(QPixmap(image_path));
+}
+
+template<typename T>
+void ElementStyler::setFixedSize(QString element_id, QString dimensions)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "for image application";
+        return;
+    }
+    QStringList positions = dimensions.split("x");
+    if (positions.size() != 2) {
+        qDebug() << "Error parsing the size. Received size is" << dimensions;
+        return;
+    }
+    QSize size(positions[0].toInt(), positions[1].toInt());
+    pointer->setFixedSize(size);
 }

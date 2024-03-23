@@ -24,6 +24,12 @@ private:
 
     template<typename T>
     void setText(QString element_id, QString text);
+
+    template<typename T>
+    void setPixmap(QString element_id, QString image_path);
+
+    template<typename T>
+    void setFixedSize(QString element_id, QString dimensions);
 };
 
 #endif // ELEMENTSTYLER_H
