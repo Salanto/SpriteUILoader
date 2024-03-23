@@ -33,11 +33,10 @@ void ManageMentUI::on_pushbutton_pressed()
     loader->loadDocument(edit->toPlainText().toUtf8());
     QWidget *ui = loader->ui();
     if (ui == nullptr) {
+        qDebug() << "UI pointer is a nullptr.";
         return;
     }
     ui->setAttribute(Qt::WA_DeleteOnClose);
-    QLabel *lbl = ui->findChild<QLabel *>("lobby_text");
-    lbl->setText("Some Text");
     ui->show();
 }
 

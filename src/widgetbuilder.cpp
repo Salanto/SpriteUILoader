@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QWidget>
 
+#include "elementstyler.h"
 #include "spriteuiloader.h"
 
 WidgetBuilder::WidgetBuilder(QObject *parent)
@@ -22,6 +23,13 @@ void WidgetBuilder::createRootWidget(const QDomNode &nodes)
     root_widget_name = node_attributes.value("id");
     if (nodes.hasChildNodes()) {
         createChildElement(nodes.childNodes(), node_attributes.value("id"));
+    }
+
+    ElementStyler styler(this, root_widget);
+    for (const QString &element_id : widget_types.keys()) {
+        const QString &element_class = widget_types.value(element_id);
+        QMap<QString, QString> element_properties = widget_configuration.value(element_id);
+        styler.styleElement(element_id, element_class, element_properties);
     }
 }
 
@@ -49,6 +57,7 @@ void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent
         }
 
         widget_types.insert(node_attributes.value("id"), node.nodeName());
+        widget_configuration.insert(node_attributes.value("id"), node_attributes);
 
         if (loader->isWidget(parent_type)) {
             // Parent is a widget. What are we though?
@@ -147,6 +156,7 @@ void WidgetBuilder::appendEffectToWidget(QString parent_widget,
 QWidget *WidgetBuilder::ui()
 {
     // This step will be unecessary in production code as we would reparent to a QMainWindow.
+    qDebug() << "Main widget name" << root_widget_name;
     QWidget *widget = objectPointer<QWidget *>(root_widget_name);
     if (widget == nullptr) {
         return widget;
