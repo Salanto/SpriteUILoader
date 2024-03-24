@@ -17,6 +17,7 @@ XMLInputWindow::XMLInputWindow(QWidget *parent)
     lbl->setText("Enter XML here.");
     edit = new QTextEdit(this);
     edit->setPlaceholderText("Add XML here!");
+    edit->setAcceptRichText(false);
     QPushButton *button = new QPushButton(this);
     button->setText("Spawn UI");
     layout->addWidget(lbl);

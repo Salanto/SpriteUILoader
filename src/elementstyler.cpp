@@ -1,8 +1,11 @@
 #include "elementstyler.h"
 #include <QDebug>
 
+#include <QCheckBox>
+#include <QComboBox>
 #include <QGraphicsDropShadowEffect>
 #include <QLabel>
+#include <QListWidget>
 #include <QWidget>
 
 ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
@@ -14,12 +17,47 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     }
 
     // Widgets
+    QMap<QString, ElementStylist> qcheckbox_styler;
+    qcheckbox_styler["size"] = &ElementStyler::setFixedSize<QCheckBox>;
+    qcheckbox_styler["position"] = &ElementStyler::move<QCheckBox>;
+    qcheckbox_styler["visible"] = &ElementStyler::setVisible<QCheckBox>;
+    qcheckbox_styler["enabled"] = &ElementStyler::setEnabled<QCheckBox>;
+    qcheckbox_styler["text"] = &ElementStyler::setText<QCheckBox>;
+    qcheckbox_styler["checkable"] = &ElementStyler::setCheckable<QCheckBox>;
+    qcheckbox_styler["checked"] = &ElementStyler::setChecked<QCheckBox>;
+    styler["QCheckBox"] = qcheckbox_styler;
+
+    QMap<QString, ElementStylist> qcombobox_styler;
+    qcombobox_styler["size"] = &ElementStyler::setFixedSize<QComboBox>;
+    qcombobox_styler["position"] = &ElementStyler::move<QComboBox>;
+    qcombobox_styler["visible"] = &ElementStyler::setVisible<QComboBox>;
+    qcombobox_styler["enabled"] = &ElementStyler::setEnabled<QComboBox>;
+    qcombobox_styler["items"] = &ElementStyler::addItems<QComboBox>;
+    qcombobox_styler["editable"] = &ElementStyler::setEditable<QComboBox>;
+    qcombobox_styler["placeholder"] = &ElementStyler::setPlaceholderText<QComboBox>;
+    styler["QComboBox"] = qcombobox_styler;
+
+    QMap<QString, ElementStylist> qwidget_styler;
+    qwidget_styler["size"] = &ElementStyler::setFixedSize<QWidget>;
+    qwidget_styler["position"] = &ElementStyler::move<QWidget>;
+    qwidget_styler["visible"] = &ElementStyler::setVisible<QWidget>;
+    qwidget_styler["enabled"] = &ElementStyler::setEnabled<QWidget>;
+    styler["QWidget"] = qwidget_styler;
+
+    QMap<QString, ElementStylist> qlistwidget_styler;
+    qwidget_styler["size"] = &ElementStyler::setFixedSize<QListWidget>;
+    qwidget_styler["position"] = &ElementStyler::move<QListWidget>;
+    qwidget_styler["visible"] = &ElementStyler::setVisible<QListWidget>;
+    qwidget_styler["enabled"] = &ElementStyler::setEnabled<QListWidget>;
+    styler["QListWidget"] = qlistwidget_styler;
 
     QMap<QString, ElementStylist> qlabel_styler;
     qlabel_styler["text"] = &ElementStyler::setText<QLabel>;
     qlabel_styler["image"] = &ElementStyler::setPixmap<QLabel>;
     qlabel_styler["size"] = &ElementStyler::setFixedSize<QLabel>;
     qlabel_styler["position"] = &ElementStyler::move<QLabel>;
+    qlabel_styler["visible"] = &ElementStyler::setVisible<QLabel>;
+    qlabel_styler["enabled"] = &ElementStyler::setEnabled<QLabel>;
     styler["QLabel"] = qlabel_styler;
 
     // Layouts
@@ -200,4 +238,93 @@ void ElementStyler::setFloatOpacity(QString element_id, QString opacity)
         return;
     }
     pointer->setOpacity(opacity.toFloat());
+}
+
+template<typename T>
+void ElementStyler::setVisible(QString element_id, QString visible)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set visibility";
+        return;
+    }
+    bool is_visible = QVariant::fromValue<QString>(visible).toBool();
+    pointer->setVisible(is_visible);
+}
+
+template<typename T>
+void ElementStyler::setToolTip(QString element_id, QString tooltip)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set tooltip";
+        return;
+    }
+    pointer->setToolTip(tooltip);
+}
+
+template<typename T>
+void ElementStyler::setEnabled(QString element_id, QString enabled)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set enabled state";
+        return;
+    }
+    pointer->setEnabled(QVariant::fromValue<QString>(enabled).toBool());
+}
+
+template<typename T>
+void ElementStyler::setCheckable(QString element_id, QString checkable)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set checkable state";
+        return;
+    }
+    pointer->setCheckable(QVariant::fromValue<QString>(checkable).toBool());
+}
+
+template<typename T>
+void ElementStyler::setChecked(QString element_id, QString checked)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set checked state";
+        return;
+    }
+    pointer->setChecked(QVariant::fromValue<QString>(checked).toBool());
+}
+
+template<typename T>
+void ElementStyler::addItems(QString element_id, QString items)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set selectable items";
+        return;
+    }
+    pointer->addItems(items.split(","));
+}
+
+template<typename T>
+void ElementStyler::setEditable(QString element_id, QString editable)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set editable state";
+        return;
+    }
+    pointer->setEditable(QVariant::fromValue<QString>(editable).toBool());
+}
+
+template<typename T>
+void ElementStyler::setPlaceholderText(QString element_id, QString placeholder)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set placeholder text";
+        return;
+    }
+    pointer->setPlaceholderText(placeholder);
 }

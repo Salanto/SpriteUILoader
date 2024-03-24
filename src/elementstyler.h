@@ -26,6 +26,9 @@ private:
     void setText(QString element_id, QString text);
 
     template<typename T>
+    void setPlaceholderText(QString element_id, QString placeholder);
+
+    template<typename T>
     void setPixmap(QString element_id, QString image_path);
 
     template<typename T>
@@ -48,6 +51,27 @@ private:
 
     template<typename T>
     void setFloatOpacity(QString element_id, QString opacity);
+
+    template<typename T>
+    void setVisible(QString element_id, QString visible);
+
+    template<typename T>
+    void setEnabled(QString element_id, QString enabled);
+
+    template<typename T>
+    void setToolTip(QString element_id, QString tooltip);
+
+    template<typename T>
+    void setCheckable(QString element_id, QString checkable);
+
+    template<typename T>
+    void setChecked(QString element_id, QString checked);
+
+    template<typename T>
+    void setEditable(QString element_id, QString editable);
+
+    template<typename T>
+    void addItems(QString element_id, QString items);
 };
 
 #endif // ELEMENTSTYLER_H
