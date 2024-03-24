@@ -5,7 +5,10 @@
 #include <QComboBox>
 #include <QGraphicsDropShadowEffect>
 #include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
+#include <QSpinBox>
+#include <QTextEdit>
 #include <QWidget>
 
 ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
@@ -35,6 +38,7 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qcombobox_styler["items"] = &ElementStyler::addItems<QComboBox>;
     qcombobox_styler["editable"] = &ElementStyler::setEditable<QComboBox>;
     qcombobox_styler["placeholder"] = &ElementStyler::setPlaceholderText<QComboBox>;
+    qcombobox_styler["frame"] = &ElementStyler::setFrame<QComboBox>;
     styler["QComboBox"] = qcombobox_styler;
 
     QMap<QString, ElementStylist> qwidget_styler;
@@ -45,11 +49,41 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     styler["QWidget"] = qwidget_styler;
 
     QMap<QString, ElementStylist> qlistwidget_styler;
-    qwidget_styler["size"] = &ElementStyler::setFixedSize<QListWidget>;
-    qwidget_styler["position"] = &ElementStyler::move<QListWidget>;
-    qwidget_styler["visible"] = &ElementStyler::setVisible<QListWidget>;
-    qwidget_styler["enabled"] = &ElementStyler::setEnabled<QListWidget>;
+    qlistwidget_styler["size"] = &ElementStyler::setFixedSize<QListWidget>;
+    qlistwidget_styler["position"] = &ElementStyler::move<QListWidget>;
+    qlistwidget_styler["visible"] = &ElementStyler::setVisible<QListWidget>;
+    qlistwidget_styler["enabled"] = &ElementStyler::setEnabled<QListWidget>;
     styler["QListWidget"] = qlistwidget_styler;
+
+    QMap<QString, ElementStylist> qlineedit_styler;
+    qlineedit_styler["size"] = &ElementStyler::setFixedSize<QLineEdit>;
+    qlineedit_styler["position"] = &ElementStyler::move<QLineEdit>;
+    qlineedit_styler["visible"] = &ElementStyler::setVisible<QLineEdit>;
+    qlineedit_styler["enabled"] = &ElementStyler::setEnabled<QLineEdit>;
+    qlineedit_styler["placeholder"] = &ElementStyler::setPlaceholderText<QLineEdit>;
+    qlineedit_styler["frame"] = &ElementStyler::setFrame<QLineEdit>;
+    styler["QLineEdit"] = qlineedit_styler;
+
+    QMap<QString, ElementStylist> qtextedit_styler;
+    qtextedit_styler["size"] = &ElementStyler::setFixedSize<QTextEdit>;
+    qtextedit_styler["position"] = &ElementStyler::move<QTextEdit>;
+    qtextedit_styler["visible"] = &ElementStyler::setVisible<QTextEdit>;
+    qtextedit_styler["enabled"] = &ElementStyler::setEnabled<QTextEdit>;
+    qtextedit_styler["placeholder"] = &ElementStyler::setPlaceholderText<QTextEdit>;
+    styler["QTextEdit"] = qtextedit_styler;
+
+    QMap<QString, ElementStylist> qspinbox_styler;
+    qspinbox_styler["size"] = &ElementStyler::setFixedSize<QSpinBox>;
+    qspinbox_styler["position"] = &ElementStyler::move<QSpinBox>;
+    qspinbox_styler["visible"] = &ElementStyler::setVisible<QSpinBox>;
+    qspinbox_styler["enabled"] = &ElementStyler::setEnabled<QSpinBox>;
+    qspinbox_styler["frame"] = &ElementStyler::setFrame<QSpinBox>;
+    qspinbox_styler["minimum"] = &ElementStyler::setMinimum<QSpinBox>;
+    qspinbox_styler["maximum"] = &ElementStyler::setMaximum<QSpinBox>;
+    qspinbox_styler["range"] = &ElementStyler::setRange<QSpinBox>;
+    qspinbox_styler["prefix"] = &ElementStyler::setPrefix<QSpinBox>;
+    qspinbox_styler["suffix"] = &ElementStyler::setSuffix<QSpinBox>;
+    styler["QSpinBox"] = qspinbox_styler;
 
     QMap<QString, ElementStylist> qlabel_styler;
     qlabel_styler["text"] = &ElementStyler::setText<QLabel>;
@@ -327,4 +361,76 @@ void ElementStyler::setPlaceholderText(QString element_id, QString placeholder)
         return;
     }
     pointer->setPlaceholderText(placeholder);
+}
+
+template<typename T>
+void ElementStyler::setFrame(QString element_id, QString frame_enabled)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set frame rendering enabled";
+        return;
+    }
+    pointer->setFrame(QVariant::fromValue<QString>(frame_enabled).toBool());
+}
+
+template<typename T>
+void ElementStyler::setMinimum(QString element_id, QString minimum_value)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set minimum value";
+        return;
+    }
+    pointer->setMinimum(QVariant::fromValue<QString>(minimum_value).toInt());
+}
+
+template<typename T>
+void ElementStyler::setMaximum(QString element_id, QString maximum_value)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set maximum value";
+        return;
+    }
+    pointer->setMaximum(QVariant::fromValue<QString>(maximum_value).toInt());
+}
+
+template<typename T>
+void ElementStyler::setRange(QString element_id, QString range_list)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set value range";
+        return;
+    }
+
+    QStringList ranges = range_list.split(",");
+    if (ranges.size() != 2) {
+        qDebug() << "Provided range string" << range_list << "is not valid.";
+        return;
+    }
+    pointer->setRange(ranges[0].toInt(), ranges[1].toInt());
+}
+
+template<typename T>
+void ElementStyler::setSuffix(QString element_id, QString suffix)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set suffix";
+        return;
+    }
+    pointer->setSuffix(suffix);
+}
+
+template<typename T>
+void ElementStyler::setPrefix(QString element_id, QString suffix)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to set prefix";
+        return;
+    }
+    pointer->setPrefix(suffix);
 }

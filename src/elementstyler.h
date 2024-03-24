@@ -71,7 +71,25 @@ private:
     void setEditable(QString element_id, QString editable);
 
     template<typename T>
+    void setFrame(QString element_id, QString frame_enabled);
+
+    template<typename T>
     void addItems(QString element_id, QString items);
+
+    template<typename T>
+    void setMinimum(QString element_id, QString minimum_value);
+
+    template<typename T>
+    void setMaximum(QString element_id, QString maximum_value);
+
+    template<typename T>
+    void setRange(QString element_id, QString range_list);
+
+    template<typename T>
+    void setSuffix(QString element_id, QString suffix);
+
+    template<typename T>
+    void setPrefix(QString element_id, QString suffix);
 };
 
 #endif // ELEMENTSTYLER_H
