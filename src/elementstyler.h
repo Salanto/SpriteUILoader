@@ -19,7 +19,7 @@ private:
     bool canStyleElement(QString element_class);
 
     using ElementStylist = void (ElementStyler::*)(QString, QString);
-    QMap<QString, QMap<QString, ElementStylist>> stylists;
+    QMap<QString, QMap<QString, ElementStylist>> styler;
     QWidget *ui;
 
     template<typename T>
@@ -38,10 +38,16 @@ private:
     void setColor(QString element_id, QString color);
 
     template<typename T>
+    void setFloatStrength(QString element_id, QString strength);
+
+    template<typename T>
     void setFloatOffset(QString element_id, QString offset);
 
     template<typename T>
     void setFloatBlurRadius(QString element_id, QString radius);
+
+    template<typename T>
+    void setFloatOpacity(QString element_id, QString opacity);
 };
 
 #endif // ELEMENTSTYLER_H

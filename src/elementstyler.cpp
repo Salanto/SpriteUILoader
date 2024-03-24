@@ -13,20 +13,41 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
         qDebug() << "ui pointer is a nullptr.";
     }
 
-    QMap<QString, ElementStylist> qlabel_stylists;
-    qlabel_stylists["text"] = &ElementStyler::setText<QLabel>;
-    qlabel_stylists["image"] = &ElementStyler::setPixmap<QLabel>;
-    qlabel_stylists["size"] = &ElementStyler::setFixedSize<QLabel>;
-    qlabel_stylists["position"] = &ElementStyler::move<QLabel>;
-    stylists["QLabel"] = qlabel_stylists;
+    // Widgets
 
-    QMap<QString, ElementStylist> qgraphicsdropshadoweffect_stylists;
-    qgraphicsdropshadoweffect_stylists["color"] = &ElementStyler::setColor<QGraphicsDropShadowEffect>;
-    qgraphicsdropshadoweffect_stylists["offset"]
+    QMap<QString, ElementStylist> qlabel_styler;
+    qlabel_styler["text"] = &ElementStyler::setText<QLabel>;
+    qlabel_styler["image"] = &ElementStyler::setPixmap<QLabel>;
+    qlabel_styler["size"] = &ElementStyler::setFixedSize<QLabel>;
+    qlabel_styler["position"] = &ElementStyler::move<QLabel>;
+    styler["QLabel"] = qlabel_styler;
+
+    // Layouts
+
+    // Effects
+    // QGraphicsBlurEffect, QGraphicsColorizeEffect, QGraphicsDropShadowEffect, and QGraphicsOpacityEffect
+    QMap<QString, ElementStylist> qgraphicsblureffect_styler;
+    qgraphicsblureffect_styler["blur"] = &ElementStyler::setFloatBlurRadius<QGraphicsBlurEffect>;
+    styler["QGraphicsBlurEffect"] = qgraphicsblureffect_styler;
+
+    QMap<QString, ElementStylist> qgraphicscolorizeeffect_styler;
+    qgraphicscolorizeeffect_styler["color"] = &ElementStyler::setColor<QGraphicsColorizeEffect>;
+    qgraphicscolorizeeffect_styler["strength"]
+        = &ElementStyler::setFloatStrength<QGraphicsColorizeEffect>;
+    styler["QGraphicsColorizeEffect"] = qgraphicscolorizeeffect_styler;
+
+    QMap<QString, ElementStylist> qgraphicsdropshadoweffect_styler;
+    qgraphicsdropshadoweffect_styler["color"] = &ElementStyler::setColor<QGraphicsDropShadowEffect>;
+    qgraphicsdropshadoweffect_styler["offset"]
         = &ElementStyler::setFloatOffset<QGraphicsDropShadowEffect>;
-    qgraphicsdropshadoweffect_stylists["blur"]
+    qgraphicsdropshadoweffect_styler["blur"]
         = &ElementStyler::setFloatBlurRadius<QGraphicsDropShadowEffect>;
-    stylists["QGraphicsDropShadowEffect"] = qgraphicsdropshadoweffect_stylists;
+    styler["QGraphicsDropShadowEffect"] = qgraphicsdropshadoweffect_styler;
+
+    QMap<QString, ElementStylist> qgraphicsopcacityeffect_styler;
+    qgraphicsopcacityeffect_styler["opacity"]
+        = &ElementStyler::setFloatOpacity<QGraphicsOpacityEffect>;
+    styler["QGraphicsOpacityEffect"] = qgraphicsopcacityeffect_styler;
 }
 
 void ElementStyler::styleElement(QString element_id,
@@ -38,24 +59,24 @@ void ElementStyler::styleElement(QString element_id,
         return;
     }
 
-    QMap<QString, ElementStylist> class_stylists = stylists.value(element_class);
+    QMap<QString, ElementStylist> class_styler = styler.value(element_class);
     for (const QString &property : element_properties.keys()) {
         if (property == "id") {
             continue;
         }
 
-        if (!class_stylists.contains(property)) {
+        if (!class_styler.contains(property)) {
             qDebug() << "Unhandled property" << property << "for element class" << element_class;
             continue;
         }
-        ElementStylist styler = class_stylists[property];
+        ElementStylist styler = class_styler[property];
         (this->*styler)(element_id, element_properties[property]);
     }
 }
 
 bool ElementStyler::canStyleElement(QString element_class)
 {
-    return stylists.contains(element_class);
+    return styler.contains(element_class);
 }
 
 template<typename T>
@@ -157,4 +178,26 @@ void ElementStyler::setFloatBlurRadius(QString element_id, QString radius)
         return;
     }
     pointer->setBlurRadius(radius.toFloat());
+}
+
+template<typename T>
+void ElementStyler::setFloatStrength(QString element_id, QString strength)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to apply float offset";
+        return;
+    }
+    pointer->setStrength(strength.toFloat());
+}
+
+template<typename T>
+void ElementStyler::setFloatOpacity(QString element_id, QString opacity)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to apply float offset";
+        return;
+    }
+    pointer->setOpacity(opacity.toFloat());
 }
