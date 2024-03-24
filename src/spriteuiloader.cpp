@@ -15,7 +15,13 @@ SpriteUiLoader::SpriteUiLoader(QObject *parent)
     qDebug() << "Creating SpriteUiLoader";
 
     // We may need to create widgets not automatically supproted.
-    supported_widgets << availableWidgets();
+    supported_widgets << "QWidget"
+                      << "QLabel"
+                      << "QCheckBox"
+                      << "QComboBox"
+                      << "QLineEdit"
+                      << "QTextEdit"
+                      << "QSpinBox";
     supported_layouts << availableLayouts();
     supported_effects << "QGraphicsDropShadowEffect" << "QGraphicsBlurEffect"
                       << "QGraphicsColorizeEffect" << "QGraphicsOpacityEffect";

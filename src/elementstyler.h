@@ -90,6 +90,9 @@ private:
 
     template<typename T>
     void setPrefix(QString element_id, QString suffix);
+
+    template<typename T>
+    void setReadOnly(QString element_id, QString readonly);
 };
 
 #endif // ELEMENTSTYLER_H

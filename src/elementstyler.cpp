@@ -62,6 +62,7 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qlineedit_styler["enabled"] = &ElementStyler::setEnabled<QLineEdit>;
     qlineedit_styler["placeholder"] = &ElementStyler::setPlaceholderText<QLineEdit>;
     qlineedit_styler["frame"] = &ElementStyler::setFrame<QLineEdit>;
+    qlineedit_styler["readonly"] = &ElementStyler::setReadOnly<QLineEdit>;
     styler["QLineEdit"] = qlineedit_styler;
 
     QMap<QString, ElementStylist> qtextedit_styler;
@@ -70,6 +71,7 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qtextedit_styler["visible"] = &ElementStyler::setVisible<QTextEdit>;
     qtextedit_styler["enabled"] = &ElementStyler::setEnabled<QTextEdit>;
     qtextedit_styler["placeholder"] = &ElementStyler::setPlaceholderText<QTextEdit>;
+    qtextedit_styler["readonly"] = &ElementStyler::setReadOnly<QTextEdit>;
     styler["QTextEdit"] = qtextedit_styler;
 
     QMap<QString, ElementStylist> qspinbox_styler;
@@ -83,6 +85,7 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qspinbox_styler["range"] = &ElementStyler::setRange<QSpinBox>;
     qspinbox_styler["prefix"] = &ElementStyler::setPrefix<QSpinBox>;
     qspinbox_styler["suffix"] = &ElementStyler::setSuffix<QSpinBox>;
+    qspinbox_styler["readonly"] = &ElementStyler::setReadOnly<QSpinBox>;
     styler["QSpinBox"] = qspinbox_styler;
 
     QMap<QString, ElementStylist> qlabel_styler;
@@ -433,4 +436,15 @@ void ElementStyler::setPrefix(QString element_id, QString suffix)
         return;
     }
     pointer->setPrefix(suffix);
+}
+
+template<typename T>
+void ElementStyler::setReadOnly(QString element_id, QString readonly)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to readonly state";
+        return;
+    }
+    pointer->setReadOnly(QVariant::fromValue<QString>(readonly).toBool());
 }
