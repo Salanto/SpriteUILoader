@@ -7,7 +7,7 @@
 
 #include "layoutparseerror.h"
 
-class WidgetBuilder;
+class ElementBuilder;
 
 class LayoutLoader : public QObject
 {
@@ -40,7 +40,7 @@ private:
     VersionInformation parseVersion(QDomNode node);
     void reset();
 
-    WidgetBuilder *builder;
+    ElementBuilder *builder;
     QDomDocument document;
     const int COMPATIBLE_VERSION = 1;
     const QString COMPATIBLE_STYLE = "SPRITECHAT";

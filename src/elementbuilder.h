@@ -1,5 +1,5 @@
-#ifndef WIDGETBUILDER_H
-#define WIDGETBUILDER_H
+#ifndef ELEMENTBUILDER_H
+#define ELEMENTBUILDER_H
 
 #include <QDomNode>
 #include <QMap>
@@ -7,12 +7,12 @@
 
 class SpriteUiLoader;
 
-class WidgetBuilder : public QObject
+class ElementBuilder : public QObject
 {
     Q_OBJECT
 public:
-    explicit WidgetBuilder(QObject *parent);
-    ~WidgetBuilder(){};
+    explicit ElementBuilder(QObject *parent);
+    ~ElementBuilder(){};
 
     void createRootWidget(const QDomNode &nodes);
     void createChildElement(const QDomNodeList &nodes, QString parent_id);
@@ -40,4 +40,4 @@ private:
     QMap<QString, QMap<QString, QString>> widget_configuration;
 };
 
-#endif // WIDGETBUILDER_H
+#endif // ELEMENTBUILDER_H

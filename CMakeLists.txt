@@ -19,7 +19,7 @@ endif()
 add_executable(SpriteUILoader
   src/main.cpp
   src/layoutloader.h src/layoutloader.cpp
-  src/widgetbuilder.h src/widgetbuilder.cpp
+  src/elementbuilder.h src/elementbuilder.cpp
   src/layoutparseerror.h src/layoutparseerror.cpp
   src/spriteuiloader.h src/spriteuiloader.cpp
   src/xmlinputwindow.h src/xmlinputwindow.cpp

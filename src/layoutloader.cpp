@@ -1,12 +1,12 @@
 #include "layoutloader.h"
-#include "widgetbuilder.h"
+#include "elementbuilder.h"
 
 #include <QDebug>
 
 LayoutLoader::LayoutLoader(QObject *parent)
     : QObject{parent}
 {
-    builder = new WidgetBuilder(this);
+    builder = new ElementBuilder(this);
 }
 
 void LayoutLoader::loadDocument(const QByteArray file)
@@ -53,7 +53,7 @@ void LayoutLoader::reset()
 {
     document.clear();
     builder->deleteLater();
-    builder = new WidgetBuilder(this);
+    builder = new ElementBuilder(this);
 }
 
 LayoutLoader::VersionInformation LayoutLoader::parseVersion(QDomNode node)

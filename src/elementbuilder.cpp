@@ -1,4 +1,4 @@
-#include "widgetbuilder.h"
+#include "ElementBuilder.h"
 
 #include <QDebug>
 #include <QLayout>
@@ -8,14 +8,14 @@
 #include "elementstyler.h"
 #include "spriteuiloader.h"
 
-WidgetBuilder::WidgetBuilder(QObject *parent)
+ElementBuilder::ElementBuilder(QObject *parent)
     : QObject(parent)
 {
     loader = new SpriteUiLoader(this);
     root_widget = new QWidget(nullptr);
 }
 
-void WidgetBuilder::createRootWidget(const QDomNode &nodes)
+void ElementBuilder::createRootWidget(const QDomNode &nodes)
 {
     QMap<QString, QString> element_properties = parseAttributes(nodes.attributes());
     loader->createWidget(nodes.nodeName(), root_widget, element_properties.value("id"));
@@ -33,7 +33,7 @@ void WidgetBuilder::createRootWidget(const QDomNode &nodes)
     }
 }
 
-void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent_id)
+void ElementBuilder::createChildElement(const QDomNodeList &nodes, QString parent_id)
 {
     QString parent_type = element_classes.value(parent_id);
     for (int index = 0; index < nodes.size(); ++index) {
@@ -94,7 +94,7 @@ void WidgetBuilder::createChildElement(const QDomNodeList &nodes, QString parent
     }
 }
 
-QMap<QString, QString> WidgetBuilder::parseAttributes(QDomNamedNodeMap attribute_nodes)
+QMap<QString, QString> ElementBuilder::parseAttributes(QDomNamedNodeMap attribute_nodes)
 {
     QMap<QString, QString> attributes;
     for (int attribute = 0; attribute < attribute_nodes.size(); ++attribute) {
@@ -104,18 +104,18 @@ QMap<QString, QString> WidgetBuilder::parseAttributes(QDomNamedNodeMap attribute
     return attributes;
 }
 
-void WidgetBuilder::appendWidgetToWidget(QString parent_widget,
-                                         QString widget_type,
-                                         QString child_widget)
+void ElementBuilder::appendWidgetToWidget(QString parent_widget,
+                                          QString widget_type,
+                                          QString child_widget)
 {
     qDebug() << "Creating widget with name" << child_widget;
     QWidget *parent = objectPointer<QWidget *>(parent_widget);
     loader->createWidget(widget_type, parent, child_widget);
 }
 
-void WidgetBuilder::appendWidgetToLayout(QString parent_layout,
-                                         QString widget_type,
-                                         QString child_widget)
+void ElementBuilder::appendWidgetToLayout(QString parent_layout,
+                                          QString widget_type,
+                                          QString child_widget)
 {
     qDebug() << "Creating widget with name" << child_widget;
     QLayout *parent = objectPointer<QLayout *>(parent_layout);
@@ -123,9 +123,9 @@ void WidgetBuilder::appendWidgetToLayout(QString parent_layout,
     parent->addWidget(widget);
 }
 
-void WidgetBuilder::appendLayoutToWidget(QString parent_widget,
-                                         QString layout_type,
-                                         QString child_layout)
+void ElementBuilder::appendLayoutToWidget(QString parent_widget,
+                                          QString layout_type,
+                                          QString child_layout)
 {
     qDebug() << root_widget;
     qDebug() << "Creating layout with name" << child_layout;
@@ -134,9 +134,9 @@ void WidgetBuilder::appendLayoutToWidget(QString parent_widget,
     parent->setLayout(layout);
 }
 
-void WidgetBuilder::appendLayoutToLayout(QString parent_layout,
-                                         QString layout_type,
-                                         QString child_layout)
+void ElementBuilder::appendLayoutToLayout(QString parent_layout,
+                                          QString layout_type,
+                                          QString child_layout)
 {
     qDebug() << "Creating layout with name" << child_layout;
     QBoxLayout *parent = objectPointer<QBoxLayout *>(parent_layout);
@@ -148,9 +148,9 @@ void WidgetBuilder::appendLayoutToLayout(QString parent_layout,
     parent->addLayout(layout);
 }
 
-void WidgetBuilder::appendEffectToWidget(QString parent_widget,
-                                         QString effect_type,
-                                         QString child_effect)
+void ElementBuilder::appendEffectToWidget(QString parent_widget,
+                                          QString effect_type,
+                                          QString child_effect)
 {
     qDebug() << "Creating effect with name" << child_effect;
     QWidget *parent = objectPointer<QWidget *>(parent_widget);
@@ -158,7 +158,7 @@ void WidgetBuilder::appendEffectToWidget(QString parent_widget,
     parent->setGraphicsEffect(effect);
 }
 
-QWidget *WidgetBuilder::ui()
+QWidget *ElementBuilder::ui()
 {
     // This step will be unecessary in production code as we would reparent to a QMainWindow.
     qDebug() << "Main widget name" << root_widget_name;
@@ -171,7 +171,7 @@ QWidget *WidgetBuilder::ui()
 }
 
 template<typename T>
-T WidgetBuilder::objectPointer(QString object_name)
+T ElementBuilder::objectPointer(QString object_name)
 {
     return root_widget->findChild<T>(object_name);
 }
