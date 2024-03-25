@@ -1,8 +1,10 @@
 #include "elementstyler.h"
 #include <QDebug>
+#include "qfontdatabase.h"
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFontDatabase>
 #include <QGraphicsDropShadowEffect>
 #include <QLabel>
 #include <QLineEdit>
@@ -28,6 +30,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qcheckbox_styler["text"] = &ElementStyler::setText<QCheckBox>;
     qcheckbox_styler["checkable"] = &ElementStyler::setCheckable<QCheckBox>;
     qcheckbox_styler["checked"] = &ElementStyler::setChecked<QCheckBox>;
+    qcheckbox_styler["font"] = &ElementStyler::setFont<QCheckBox>;
+    qcheckbox_styler["pointsize"] = &ElementStyler::setPointSize<QCheckBox>;
     styler["QCheckBox"] = qcheckbox_styler;
 
     QMap<QString, ElementStylist> qcombobox_styler;
@@ -39,6 +43,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qcombobox_styler["editable"] = &ElementStyler::setEditable<QComboBox>;
     qcombobox_styler["placeholder"] = &ElementStyler::setPlaceholderText<QComboBox>;
     qcombobox_styler["frame"] = &ElementStyler::setFrame<QComboBox>;
+    qcombobox_styler["font"] = &ElementStyler::setFont<QComboBox>;
+    qcombobox_styler["pointsize"] = &ElementStyler::setPointSize<QComboBox>;
     styler["QComboBox"] = qcombobox_styler;
 
     QMap<QString, ElementStylist> qwidget_styler;
@@ -53,6 +59,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qlistwidget_styler["position"] = &ElementStyler::move<QListWidget>;
     qlistwidget_styler["visible"] = &ElementStyler::setVisible<QListWidget>;
     qlistwidget_styler["enabled"] = &ElementStyler::setEnabled<QListWidget>;
+    qlistwidget_styler["font"] = &ElementStyler::setFont<QListWidget>;
+    qlistwidget_styler["pointsize"] = &ElementStyler::setPointSize<QListWidget>;
     styler["QListWidget"] = qlistwidget_styler;
 
     QMap<QString, ElementStylist> qlineedit_styler;
@@ -63,6 +71,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qlineedit_styler["placeholder"] = &ElementStyler::setPlaceholderText<QLineEdit>;
     qlineedit_styler["frame"] = &ElementStyler::setFrame<QLineEdit>;
     qlineedit_styler["readonly"] = &ElementStyler::setReadOnly<QLineEdit>;
+    qlineedit_styler["font"] = &ElementStyler::setFont<QLineEdit>;
+    qlineedit_styler["pointsize"] = &ElementStyler::setPointSize<QLineEdit>;
     styler["QLineEdit"] = qlineedit_styler;
 
     QMap<QString, ElementStylist> qtextedit_styler;
@@ -72,6 +82,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qtextedit_styler["enabled"] = &ElementStyler::setEnabled<QTextEdit>;
     qtextedit_styler["placeholder"] = &ElementStyler::setPlaceholderText<QTextEdit>;
     qtextedit_styler["readonly"] = &ElementStyler::setReadOnly<QTextEdit>;
+    qtextedit_styler["font"] = &ElementStyler::setFont<QTextEdit>;
+    qtextedit_styler["pointsize"] = &ElementStyler::setPointSize<QTextEdit>;
     styler["QTextEdit"] = qtextedit_styler;
 
     QMap<QString, ElementStylist> qspinbox_styler;
@@ -86,6 +98,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qspinbox_styler["prefix"] = &ElementStyler::setPrefix<QSpinBox>;
     qspinbox_styler["suffix"] = &ElementStyler::setSuffix<QSpinBox>;
     qspinbox_styler["readonly"] = &ElementStyler::setReadOnly<QSpinBox>;
+    qspinbox_styler["font"] = &ElementStyler::setFont<QSpinBox>;
+    qspinbox_styler["pointsize"] = &ElementStyler::setPointSize<QSpinBox>;
     styler["QSpinBox"] = qspinbox_styler;
 
     QMap<QString, ElementStylist> qlabel_styler;
@@ -95,6 +109,8 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qlabel_styler["position"] = &ElementStyler::move<QLabel>;
     qlabel_styler["visible"] = &ElementStyler::setVisible<QLabel>;
     qlabel_styler["enabled"] = &ElementStyler::setEnabled<QLabel>;
+    qlabel_styler["font"] = &ElementStyler::setFont<QLabel>;
+    qlabel_styler["pointsize"] = &ElementStyler::setPointSize<QLabel>;
     styler["QLabel"] = qlabel_styler;
 
     // Layouts
@@ -238,7 +254,7 @@ void ElementStyler::setFloatOffset(QString element_id, QString offset)
         return;
     }
     QStringList offsets = offset.split(",");
-    if (offsets.size()) {
+    if (offsets.size() != 2) {
         qDebug() << "Error parsing the size. Received offset is" << offsets;
     }
     pointer->setOffset(offsets[0].toFloat(), offsets[1].toFloat());
@@ -447,4 +463,35 @@ void ElementStyler::setReadOnly(QString element_id, QString readonly)
         return;
     }
     pointer->setReadOnly(QVariant::fromValue<QString>(readonly).toBool());
+}
+
+template<typename T>
+void ElementStyler::setFont(QString element_id, QString font_settings)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to readonly state";
+        return;
+    }
+    QStringList font_info = font_settings.split(",");
+    if (font_info.size() != 3) {
+        qDebug() << "Error parsing the font. Received font configuration is" << font_settings;
+        return;
+    }
+
+    QFont font = QFontDatabase::font(font_info[0], font_info[1], font_info[2].toInt());
+    pointer->setFont(font);
+}
+
+template<typename T>
+void ElementStyler::setPointSize(QString element_id, QString point_size)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to readonly state";
+        return;
+    }
+    QFont font = pointer->font();
+    font.setPointSize(point_size.toInt());
+    pointer->setFont(font);
 }

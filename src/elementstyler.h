@@ -93,6 +93,12 @@ private:
 
     template<typename T>
     void setReadOnly(QString element_id, QString readonly);
+
+    template<typename T>
+    void setFont(QString element_id, QString font_settings);
+
+    template<typename T>
+    void setPointSize(QString element_id, QString point_size);
 };
 
 #endif // ELEMENTSTYLER_H
