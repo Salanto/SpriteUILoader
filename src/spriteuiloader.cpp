@@ -21,7 +21,8 @@ SpriteUiLoader::SpriteUiLoader(QObject *parent)
                       << "QComboBox"
                       << "QLineEdit"
                       << "QTextEdit"
-                      << "QSpinBox";
+                      << "QSpinBox"
+                      << "QPushButton";
     supported_layouts << availableLayouts();
     supported_effects << "QGraphicsDropShadowEffect" << "QGraphicsBlurEffect"
                       << "QGraphicsColorizeEffect" << "QGraphicsOpacityEffect";

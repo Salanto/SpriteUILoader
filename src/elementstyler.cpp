@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
+#include <QPushButton>
 #include <QSpinBox>
 #include <QTextEdit>
 #include <QWidget>
@@ -112,6 +113,16 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qlabel_styler["font"] = &ElementStyler::setFont<QLabel>;
     qlabel_styler["pointsize"] = &ElementStyler::setPointSize<QLabel>;
     styler["QLabel"] = qlabel_styler;
+
+    QMap<QString, ElementStylist> qpushbutton_styler;
+    qpushbutton_styler["size"] = &ElementStyler::setFixedSize<QPushButton>;
+    qpushbutton_styler["position"] = &ElementStyler::move<QPushButton>;
+    qpushbutton_styler["visible"] = &ElementStyler::setVisible<QPushButton>;
+    qpushbutton_styler["enabled"] = &ElementStyler::setEnabled<QPushButton>;
+    qpushbutton_styler["text"] = &ElementStyler::setText<QPushButton>;
+    qpushbutton_styler["font"] = &ElementStyler::setFont<QPushButton>;
+    qpushbutton_styler["pointsize"] = &ElementStyler::setPointSize<QPushButton>;
+    styler["QPushButton"] = qpushbutton_styler;
 
     // Layouts
 

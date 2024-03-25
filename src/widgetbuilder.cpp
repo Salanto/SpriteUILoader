@@ -108,7 +108,7 @@ void WidgetBuilder::appendWidgetToWidget(QString parent_widget,
                                          QString widget_type,
                                          QString child_widget)
 {
-    qDebug() << "Creating object with name" << child_widget;
+    qDebug() << "Creating widget with name" << child_widget;
     QWidget *parent = objectPointer<QWidget *>(parent_widget);
     loader->createWidget(widget_type, parent, child_widget);
 }
@@ -117,7 +117,7 @@ void WidgetBuilder::appendWidgetToLayout(QString parent_layout,
                                          QString widget_type,
                                          QString child_widget)
 {
-    qDebug() << "Creating object with name" << child_widget;
+    qDebug() << "Creating widget with name" << child_widget;
     QLayout *parent = objectPointer<QLayout *>(parent_layout);
     QWidget *widget = loader->createWidget(widget_type, nullptr, child_widget);
     parent->addWidget(widget);
@@ -127,7 +127,8 @@ void WidgetBuilder::appendLayoutToWidget(QString parent_widget,
                                          QString layout_type,
                                          QString child_layout)
 {
-    qDebug() << "Creating object with name" << child_layout;
+    qDebug() << root_widget;
+    qDebug() << "Creating layout with name" << child_layout;
     QWidget *parent = objectPointer<QWidget *>(parent_widget);
     QLayout *layout = loader->createLayout(layout_type, parent, child_layout);
     parent->setLayout(layout);
@@ -137,10 +138,14 @@ void WidgetBuilder::appendLayoutToLayout(QString parent_layout,
                                          QString layout_type,
                                          QString child_layout)
 {
-    qDebug() << "Creating object with name" << child_layout;
-    QLayout *parent = objectPointer<QLayout *>(parent_layout);
+    qDebug() << "Creating layout with name" << child_layout;
+    QBoxLayout *parent = objectPointer<QBoxLayout *>(parent_layout);
+    if (parent == nullptr) {
+        qDebug() << "Layout" << parent_layout << "does not support sublayouts.";
+        return;
+    }
     QLayout *layout = loader->createLayout(layout_type, parent, child_layout);
-    parent->addItem(layout);
+    parent->addLayout(layout);
 }
 
 void WidgetBuilder::appendEffectToWidget(QString parent_widget,
