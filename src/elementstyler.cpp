@@ -1,6 +1,7 @@
 #include "elementstyler.h"
 #include <QDebug>
 #include "qfontdatabase.h"
+#include "qobjectdefs.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -112,6 +113,7 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qlabel_styler["enabled"] = &ElementStyler::setEnabled<QLabel>;
     qlabel_styler["font"] = &ElementStyler::setFont<QLabel>;
     qlabel_styler["pointsize"] = &ElementStyler::setPointSize<QLabel>;
+    qlabel_styler["color"] = &ElementStyler::setStylesheetColor<QLabel>;
     styler["QLabel"] = qlabel_styler;
 
     QMap<QString, ElementStylist> qpushbutton_styler;
@@ -122,6 +124,7 @@ ElementStyler::ElementStyler(QObject *parent, QWidget *full_ui)
     qpushbutton_styler["text"] = &ElementStyler::setText<QPushButton>;
     qpushbutton_styler["font"] = &ElementStyler::setFont<QPushButton>;
     qpushbutton_styler["pointsize"] = &ElementStyler::setPointSize<QPushButton>;
+    qpushbutton_styler["color"] = &ElementStyler::setStylesheetColor<QPushButton>;
     styler["QPushButton"] = qpushbutton_styler;
 
     // Layouts
@@ -505,4 +508,27 @@ void ElementStyler::setPointSize(QString element_id, QString point_size)
     QFont font = pointer->font();
     font.setPointSize(point_size.toInt());
     pointer->setFont(font);
+}
+
+template<typename T>
+void ElementStyler::setStylesheetColor(QString element_id, QString color)
+{
+    T *pointer = ui->findChild<T *>(element_id);
+    if (pointer == nullptr) {
+        qDebug() << "Unable to locate element" << element_id << "to apply text color";
+        return;
+    }
+    QColor l_color = QColor::fromString(color);
+    if (!l_color.isValid()) {
+        qDebug() << "Unable to parse color. Provided color" << color << "is not valid.";
+        return;
+    }
+    QString stylesheet_entry = QString("%1 {color: %2 }")
+                                   .arg(pointer->metaObject()->className(),
+                                        QVariant::fromValue<QColor>(l_color).toString());
+    QString stylesheet = pointer->styleSheet();
+    qDebug() << stylesheet;
+    stylesheet.append(stylesheet_entry);
+    qDebug() << stylesheet;
+    pointer->setStyleSheet(stylesheet);
 }

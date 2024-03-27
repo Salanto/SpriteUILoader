@@ -41,6 +41,9 @@ private:
     void setColor(QString element_id, QString color);
 
     template<typename T>
+    void setStylesheetColor(QString element_id, QString color);
+
+    template<typename T>
     void setFloatStrength(QString element_id, QString strength);
 
     template<typename T>
